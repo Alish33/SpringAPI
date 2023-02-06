@@ -1,5 +1,6 @@
 package com.example.taksone.service;
 
+import com.example.taksone.customException.CustomException;
 import com.example.taksone.enitiy.Author;
 
 import java.util.HashMap;
@@ -12,9 +13,9 @@ public interface ImpAuthorService  {
     Author addAuthor(Author author);
     String removeAuthor(int id, Author author);
     Author editAuthor(int id);
-    Author updateAuthor(int id,Author author);
+    Author updateAuthor(int id,Author author) throws CustomException;
 
-    HashMap<Integer, String> avgRating();
+    HashMap<Integer, String> avgRating() throws CustomException;
 
-    HashMap<String, Double> avgBookPrice();
+    HashMap<String, Double> avgBookPrice() throws CustomException;
 }

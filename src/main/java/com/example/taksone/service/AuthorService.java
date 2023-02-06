@@ -4,6 +4,7 @@ import com.example.taksone.enitiy.Author;
 import com.example.taksone.enitiy.Book;
 import com.example.taksone.repository.AuthorRepository;
 import org.springframework.stereotype.Service;
+import com.example.taksone.customException.CustomException;
 
 import java.util.*;
 
@@ -36,16 +37,24 @@ public class AuthorService implements ImpAuthorService{
         return authorRepository.findById(id).orElse(null);
     }
 
-    public Author updateAuthor(int id, Author author){
-        Author oldAuthor = authorRepository.findById(id).orElse(null);
-        oldAuthor.setFirst_name(author.getFirst_name());
-        oldAuthor.setLast_name(author.getLast_name());
-        oldAuthor.setCountry(author.getCountry());
-        return authorRepository.save(oldAuthor);
+    public Author updateAuthor(int id, Author author) throws CustomException {
+
+        Author newAuthor = null;
+        Optional<Author> oldAuthor = authorRepository.findById(id);
+
+        if(oldAuthor.isPresent()){
+            author.setAuthor_id(id);
+            newAuthor = authorRepository.save(author);
+        }else{
+            throw new CustomException("Sorry ! Author is not found.");
+        }
+
+        return newAuthor;
+
     }
 
     @Override
-    public HashMap<Integer, String> avgRating() {
+    public HashMap<Integer, String> avgRating() throws CustomException {
         HashMap<Integer,String> book_rating_map = new HashMap<>();
         List<Author> authors = authorRepository.findAll();
 
@@ -59,8 +68,8 @@ public class AuthorService implements ImpAuthorService{
             double average_rating_value = 0;
             try{
                 average_rating_value = total_rating/books.size();
-            }catch (NumberFormatException  e){
-
+            }catch (Exception  e){
+                    throw new CustomException("There is no book for such author. So no average.");
             }
             book_rating_map.put(authors.get(i).getAuthor_id(), authors.get(i).getFirst_name()+" "+average_rating_value);
         }
@@ -69,7 +78,8 @@ public class AuthorService implements ImpAuthorService{
     }
 
     @Override
-    public HashMap<String, Double> avgBookPrice() {
+    public HashMap<String, Double> avgBookPrice() throws CustomException {
+
         HashMap<String, Double> avg_book_price_hash = new HashMap<>();
         HashMap<String, Double> sorted_hashmap = new HashMap<>();
 
@@ -77,7 +87,7 @@ public class AuthorService implements ImpAuthorService{
 
 
         for (int i = 0; i < author_list.size(); i++) {
-            int total_book_price = 0;
+            double total_book_price = 0;
             List<Book> author_book= author_list.get(i).getBooks();
             for (Book book: author_book
                  ) {
@@ -87,7 +97,7 @@ public class AuthorService implements ImpAuthorService{
             try{
                 average_book_price = total_book_price/author_book.size();
             }catch(Exception ae){
-
+                    throw new CustomException("The author has zero book");
             }
 
 

@@ -3,6 +3,8 @@ package com.example.taksone.controller;
 import com.example.taksone.enitiy.Book;
 import com.example.taksone.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +38,11 @@ public class BookController {
     @PutMapping("/updateBook/{id}")
     public Book update_book(@PathVariable("id") int id,@RequestBody Book book){
         return bookService.updateBook(id , book);
+    }
+
+    @GetMapping("/book-pagination")
+    public ResponseEntity<?> findBookByPage(@RequestParam("page_no") int page_no , @RequestParam("page_size") int page_size){
+        return new ResponseEntity<>(bookService.findAllByPageSortByPrice(page_no , page_size), HttpStatus.OK);
     }
 
 }

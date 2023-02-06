@@ -3,6 +3,9 @@ package com.example.taksone.service;
 import com.example.taksone.enitiy.Book;
 import com.example.taksone.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -41,5 +44,12 @@ public class BookService implements ImpBookService {
         oldBook.setPrice(book.getPrice());
         oldBook.setISBN(book.getISBN());
         return bookRepository.save(oldBook);
+    }
+
+    @Override
+    public List<Book> findAllByPageSortByPrice(int page_no , int page_size) {
+        Pageable sortedByPriceDesc = PageRequest.of(page_no , page_size , Sort.by("price").descending());
+        List<Book> allBooks = bookRepository.findAll(sortedByPriceDesc).getContent();
+        return allBooks;
     }
 }

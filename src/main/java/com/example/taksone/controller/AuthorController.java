@@ -1,5 +1,6 @@
 package com.example.taksone.controller;
 
+import com.example.taksone.customException.CustomException;
 import com.example.taksone.enitiy.Author;
 import com.example.taksone.repository.AuthorRepository;
 import com.example.taksone.service.AuthorService;
@@ -41,17 +42,17 @@ public class AuthorController {
     }
 
     @PutMapping("/updateAuthor/{id}")
-    public Author updateAuthor(@PathVariable("id") int id, @RequestBody Author author){
+    public Author updateAuthor(@PathVariable("id") int id, @RequestBody Author author) throws CustomException {
         return authorService.updateAuthor(id,author);
     }
 
     @GetMapping("/averageRating")
-    public ResponseEntity<?> fetchAvgRating (){
+    public ResponseEntity<?> fetchAvgRating () throws CustomException {
         return new ResponseEntity<>(authorService.avgRating(), HttpStatus.OK);
     }
 
     @GetMapping("/averagePrice")
-    public ResponseEntity<?> fetchAverageBookPrice(){
+    public ResponseEntity<?> fetchAverageBookPrice() throws CustomException {
         return new ResponseEntity<>(authorService.avgBookPrice(), HttpStatus.OK);
     }
 
